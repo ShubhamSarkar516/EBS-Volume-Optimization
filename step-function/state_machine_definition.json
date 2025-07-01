@@ -1,0 +1,31 @@
+{
+  "Comment": "EBS Volume Optimization Workflow",
+  "StartAt": "FilterVolumes",
+  "States": {
+    "FilterVolumes": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:495599744489:function:Filter_Volumes",
+      "Next": "LogToDynamo"
+    },
+    "LogToDynamo": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:495599744489:function:Log_To_Dynamo_DB",
+      "Next": "ModifyVolume"
+    },
+    "ModifyVolume": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:495599744489:function:Modify_Volume_Type",
+      "Next": "VerifyModification"
+    },
+    "VerifyModification": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:495599744489:function:Verify_Modification",
+      "Next": "NotifyConversion"
+    },
+    "NotifyConversion": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:495599744489:function:Send_Notification",
+      "End": true
+    }
+  }
+}
