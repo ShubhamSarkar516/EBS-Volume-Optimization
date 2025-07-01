@@ -70,76 +70,114 @@ ebs-volume-optimization/
 └── README.md
 ```
 
-🔄 Workflow Breakdown
+## 🔄 Workflow Breakdown
 1. Scheduled Trigger
 EventBridge Rule triggers every day at 1 AM UTC.
 Target: AWS Step Function.
 
-2. Step Function Workflow
-Step	                     Lambda Function	                    Description
 
-FilterVolumes	             Filter_Volume.py	                  Scans EBS for gp2 volumes with tag AutoConvert=true
-LogToDynamo	               Log_To_Dynamo_DB.py	              Logs volume metadata to DynamoDB
-ModifyVolume	             Modify_Volume_Type.py	            Converts the volume to gp3 using modify_volume()
-VerifyModification	       Verify_Modification.py	            Optionally confirms if the conversion succeeded
-SendNotification	         Send_Notification.py	              Sends SNS email notification
+## 🧩 Step Function Workflow
 
-🧪 Input Payload
+| Step                 | Lambda Function             | Description                                                                   |
+|----------------------|------------------------------|-------------------------------------------------------------------------------|
+| FilterVolumes        | `Filter_Volume.py`           | Scans EBS for `gp2` volumes with tag `AutoConvert=true`.                      |
+| LogToDynamo          | `Log_To_Dynamo_DB.py`        | Logs volume metadata to DynamoDB (`EBS_Conversion_Logs` table).                 |
+| ModifyVolume         | `Modify_Volume_Type.py`      | Converts volume to `gp3` using `Modify_Volume_Type()` API call.                    |
+| VerifyModification   | `Verify_Modification.py`     | Optionally confirms if the conversion succeeded.       |
+| SendNotification     | `Send_Notification.py`       | Sends status email via SNS topic `EBS-Conversion-Alert`.                      |
+
+
+## 🧪 Input Payload
 
 [
+
   {
+  
     "VolumeId": "vol-080d7c30627aae74a",
+    
     "Size": 8,
+    
     "Region": "ap-south-1",
+    
     "InstanceId": "i-08de65bc01076ef0d"
   }
+  
 ]
 
-📘 DynamoDB Table: EBS_Conversion_Logs
-Attributes:
-VolumeId (Partition Key)
-InstanceId
-Region
-Size
-Status
-Timestamp
 
-📨 SNS Notification Example
+## 📘 DynamoDB Table: EBS_Conversion_Logs
+
+Attributes:
+
+VolumeId (Partition Key),
+
+InstanceId,
+
+Region,
+
+Size,
+
+Status,
+
+Timestamp.
+
+## 📨 SNS Notification Example
+
 Subject: EBS Volume Converted
-Volume ID: vol-0123456789abcdef0
+
+Volume ID: vol-080d7c30627aae74a
+
 Region: ap-south-1
+
 Status: SUCCESS
 
-🔐 IAM Role Summary
 
-Lambda Function	                        Required Permissions
+## 🔐 IAM Role Summary
 
-Lambda_Filter_Volumes_Role       ->    ec2:DescribeVolumes
-Lambda_Log_To_Dynamo_DB_Role	   ->    dynamodb:PutItem, dynamodb:DescribeTable
-Lambda_Modify_Volume_Type_Role   ->    ec2:ModifyVolume
-Lambda_Verify_Modification_Role	 ->    ec2:DescribeVolumes
-Lambda_Notify_Conversion_Role    ->    sns:Publish
+| **Lambda Function** | **IAM Role Name**                 | **Required Permissions**                     |
+| ------------------- | --------------------------------- | -------------------------------------------- |
+| FilterVolumes       | `Lambda_Filter_Volumes_Role`      | `ec2:DescribeVolumes`                        |
+| LogToDynamoDB       | `Lambda_Log_To_Dynamo_DB_Role`    | `dynamodb:PutItem`, `dynamodb:DescribeTable` |
+| ModifyVolumeType    | `Lambda_Modify_Volume_Type_Role`  | `ec2:ModifyVolume`                           |
+| VerifyModification  | `Lambda_Verify_Modification_Role` | `ec2:DescribeVolumes`                        |
+| SendNotification    | `Lambda_Notify_Conversion_Role`   | `sns:Publish`                                |
 
 All policies follow the principle of least privilege.
 
-🖥 Deployment Steps Summary
-✅ Create a EC2/EBS
-✅ Create EBS_Conversion_Logs DynamoDB table
-✅ Create SNS topic EBS-Conversion-Alert and subscribe via email
-✅ Create custom IAM policies and roles
-✅ Create all Lambda functions (Python 3.13)
-✅ Create Step Function with the state machine JSON
-✅ Set up EventBridge rule with cron expression
-✅ Test manually with sample event → verify logs and notification
-✅ Capture screenshots and validate flow
 
-📸 Sample Screenshots (in /screenshots)
-✅ Step Function execution flow
-✅ DynamoDB Scan output
-✅ Email alert from SNS
-✅ CloudWatch logs of Lambda output
+## 🖥 Deployment Steps Summary
 
-📋 Technical Report
+✅ Create a EC2/EBS.
+
+✅ Create EBS_Conversion_Logs DynamoDB table.
+
+✅ Create SNS topic EBS-Conversion-Alert and subscribe via email.
+
+✅ Create custom IAM policies and roles.
+
+✅ Create all Lambda functions (Python 3.13).
+
+✅ Create Step Function with the state machine JSON.
+
+✅ Set up EventBridge rule with cron expression.
+
+✅ Test manually with sample event → verify logs and notification.
+
+✅ Capture screenshots and validate flow.
+
+
+## 📸 Sample Screenshots (in /screenshots)
+
+✅ Step Function execution flow.
+
+✅ DynamoDB Scan output.
+
+✅ Email alert from SNS.
+
+✅ CloudWatch logs of Lambda output.
+
+## 📋 Technical Report
+
 Detailed technical report is available in technical-report.md, which explains:
 Design reasoning
 IAM role and policy decisions
@@ -147,7 +185,10 @@ Real-world error handling (e.g., in-use volumes, permission failures)
 Logging and observability practices
 
 ✍ Author
+
 Shubham Sarkar
 AWS | DevOps | Python
+
 🔗 Github -> https://github.com/ShubhamSarkar516
+
 🔗 LinkedIn -> www.linkedin.com/in/shubham-sarkar-584570247
