@@ -44,23 +44,23 @@ The aim is to reduce EBS storage costs by automatically converting eligible `gp2
 ```bash
 ebs-volume-optimization/
 ├── architecture/
-│   └── diagram.png
+│   └── EBS_Optimization_Architecture.png
 ├── lambdas/
-│   ├── filter_volumes.py
-│   ├── log_to_dynamodb.py
-│   ├── modify_volume.py
-│   ├── verify_modification.py
-│   └── send_notification.py
+│   ├── Filter_Volumes.py
+│   ├── Log_To_Dynamo_DB.py
+│   ├── Modify_Volume_Type.py
+│   ├── Verify_Modification.py
+│   └── Send_Notification.py
 ├── step-function/
 │   └── state_machine_definition.json
 ├── dynamodb/
 │   └── table_schema.json
-├── eventbridge/
-│   └── rule_schedule.json
 ├── iam-policies/
-│   ├── lambda_filter_policy.json
-│   ├── log_to_dynamo_policy.json
-│   └── general_lambda_role.json
+│   ├── Filter_Volumes.json
+│   ├── Log_To_Dynamo_DB.json
+│   └── Modify_Volume_Type.json
+│   └── Verify_Modification.json
+│   └── Notify_Conversion.json
 ├── screenshots/
 │   ├── step_function_execution.png
 │   ├── dynamodb_entries.png
