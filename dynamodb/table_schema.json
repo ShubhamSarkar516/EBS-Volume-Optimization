@@ -1,0 +1,23 @@
+{
+  "VolumeID": {
+    "S": "vol-080d7c30627aae74a"
+  },
+  "InstanceID": {
+    "S": "i-08de65bc01076ef0d"
+  },
+  "OldType": {
+    "S": "gp2"
+  },
+  "Region": {
+    "S": "ap-south-1"
+  },
+  "Size": {
+    "S": "8"
+  },
+  "Status": {
+    "S": "Pending"
+  },
+  "Timestamp": {
+    "S": "2025-07-01T10:03:33.876984"
+  }
+}
